@@ -1,0 +1,355 @@
+`timescale 1ns/1ns
+module Moore_mdl (finished,R,A,B,Z1,Z2,CLK,RST,count,stateNumber,A_Light,B_Light);
+   input finished,R,A,B,Z1,Z2,CLK,RST;
+   output [4:0]stateNumber;
+   output A_Light,B_Light;
+   output [1:0]count;
+   reg A_Light,B_Light;
+   reg [4:0] state;
+   parameter S0 = 5'b00001, S1 = 5'b00110, S2 = 5'b01000, S3 = 5'b01100 , S4 = 5'b10011, S5 = 5'b10111, S7 = 5'b11011, S8 = 5'b11111;   //00 don't count  __  01 count 90taii   __  10 count 30taii  __  11 count 5taii
+      always @ (posedge CLK or negedge RST)
+         if (~RST) state = S0;  //Initialize to state S0
+      else
+        case (state)
+           S0:      if (~finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S0; 
+                else if(~finished & ~R & ~A & ~B & ~Z1 & Z2) state = S0;
+                else if(~finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(~finished & ~R & ~A & ~B & Z1 & Z2) state = S0;
+                else if(~finished & ~R & ~A & B) state = S5;
+                else if(~finished & ~R & A) state = S2;
+                else if(~finished & R) state = S0;
+                else if(finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S7; 
+                else if(finished & ~R & ~A & ~B & ~Z1 & Z2) state = S7;         //halatai vaghe an khas
+                else if(finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(finished & ~R & ~A & ~B & Z1 & Z2) state = S7;
+                else if(finished & ~R & ~A & B) state = S5;
+                else if(finished & ~R & A) state = S2;
+                else if(finished & R) state = S8;
+                   
+           S1:      if (~finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S1; 
+                else if(~finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(~finished & ~R & ~A & ~B & Z1 & ~Z2) state = S1;
+                else if(~finished & ~R & ~A & ~B & Z1 & Z2) state = S1;
+                else if(~finished & ~R & ~A & B) state = S3;
+                else if(~finished & ~R & A) state = S4;
+                else if(~finished & R) state = S0;
+                else if(finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S8; 
+                else if(finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(finished & ~R & ~A & ~B & Z1 & ~Z2) state = S8;       //halati vaghe an khas
+                else if(finished & ~R & ~A & ~B & Z1 & Z2) state = S8;
+                else if(finished & ~R & ~A & B) state = S3;
+                else if(finished & ~R & A) state = S4;
+                else if(finished & R) state = S0;
+           
+           S2:      if (~R & ~A & ~B & ~Z1 & ~Z2) state = S0; 
+                else if(~R & ~A & ~B & ~Z1 & Z2) state = S0;
+                else if(~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(~R & ~A & ~B & Z1 & Z2) state = S0;
+                else if(~R & ~A & B) state = S5;
+                else if(~R & A) state = S2;
+                else if(R) state = S0;
+           
+           S3:      if (~R & ~A & ~B & ~Z1 & ~Z2) state = S1; 
+                else if(~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(~R & ~A & ~B & Z1 & ~Z2) state = S1;
+                else if(~R & ~A & ~B & Z1 & Z2) state = S1;
+                else if(~R & ~A & B) state = S3;
+                else if(~R & A) state = S4;
+                else if(R) state = S0;
+           
+           S4:      if (~finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S8; 
+                else if(~finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(~finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(~finished & ~R & ~A & ~B & Z1 & Z2) state = S8;
+                else if(~finished & ~R & ~A & B) state = S5;
+                else if(~finished & ~R & A) state = S4;
+                else if(~finished & R) state = S0;
+                else if(finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S0; 
+                else if(finished & ~R & ~A & ~B & ~Z1 & Z2) state = S0;
+                else if(finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(finished & ~R & ~A & ~B & Z1 & Z2) state = S0;
+                else if(finished & ~R & ~A & B) state = S5;
+                else if(finished & ~R & A) state = S2;
+                else if(finished & R) state = S0;
+           
+           S5:      if (~finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S7; 
+                else if(~finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(~finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(~finished & ~R & ~A & ~B & Z1 & Z2) state = S7;
+                else if(~finished & ~R & ~A & B) state = S5;
+                else if(~finished & ~R & A) state = S4;
+                else if(~finished & R) state = S0;
+                else if(finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S1; 
+                else if(finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(finished & ~R & ~A & ~B & Z1 & ~Z2) state = S1;
+                else if(finished & ~R & ~A & ~B & Z1 & Z2) state = S1;
+                else if(finished & ~R & ~A & B) state = S3;
+                else if(finished & ~R & A) state = S4;
+                else if(finished & R) state = S0;
+           
+           S7:      if (~finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S7; 
+                else if(~finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(~finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(~finished & ~R & ~A & ~B & Z1 & Z2) state = S7;
+                else if(~finished & ~R & ~A & B) state = S5;
+                else if(~finished & ~R & A) state = S4;
+                else if(~finished & R) state = S0;
+                else if(finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S1; 
+                else if(finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(finished & ~R & ~A & ~B & Z1 & ~Z2) state = S1;
+                else if(finished & ~R & ~A & ~B & Z1 & Z2) state = S1;
+                else if(finished & ~R & ~A & B) state = S3;
+                else if(finished & ~R & A) state = S4;
+                else if(finished & R) state = S0;
+           
+           S8:      if (~finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S8; 
+                else if(~finished & ~R & ~A & ~B & ~Z1 & Z2) state = S8;
+                else if(~finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(~finished & ~R & ~A & ~B & Z1 & Z2) state = S8;
+                else if(~finished & ~R & ~A & B) state = S5;
+                else if(~finished & ~R & A) state = S4;
+                else if(~finished & R) state = S0;
+                else if(finished & ~R & ~A & ~B & ~Z1 & ~Z2) state = S0; 
+                else if(finished & ~R & ~A & ~B & ~Z1 & Z2) state = S0;
+                else if(finished & ~R & ~A & ~B & Z1 & ~Z2) state = S7;
+                else if(finished & ~R & ~A & ~B & Z1 & Z2) state = S0;
+                else if(finished & ~R & ~A & B) state = S5;
+                else if(finished & ~R & A) state = S2;
+                else if(finished & R) state = S0;
+         endcase
+         
+
+       always @ (state)     //Evaluate output
+         case (state)
+            S0: begin
+                #10 A_Light = 1;
+                #10 B_Light = 0;
+              end
+            S1: begin
+                #10 A_Light = 0;
+                #10 B_Light = 1;
+              end
+            S2: begin
+                #10 A_Light = 1;
+                #10 B_Light = 0;
+              end
+            S3: begin
+                #10 A_Light = 0;
+                #10 B_Light = 1;
+              end
+            S4: begin 
+                #10 A_Light = 0;
+                #10 B_Light = 0;
+              end
+            S5: begin 
+                #10 A_Light = 0;
+                #10 B_Light = 0;
+              end
+            S7: begin
+                #10 A_Light = 0;
+                #10 B_Light = 0;
+              end
+            S8: begin
+                #10 A_Light = 0;
+                #10 B_Light = 0;
+              end
+         endcase
+  
+    
+   assign #10 stateNumber = state;        //Output of flip-flops
+   assign #10 count = state[1:0];
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+`timescale 1ns/1ns
+module Traffic_Congestion_Detection(traffic,RST,CLK,Z);
+  input traffic,RST,CLK;
+  output Z;
+  reg Z;
+ // output [2:0]stateNumber;
+  reg [2:0] state;
+  parameter S0 = 3'b000, S1 = 3'b001, S2 = 3'b010, S3 = 3'b011 , S4 = 3'b100, S5 = 4'b101;
+    always @ (posedge CLK or negedge RST)
+         if (~RST) state = S0;  //Initialize to state S0
+      else
+        case (state)
+           S0: if (traffic) state = S0; else state = S1;
+           S1: if (traffic) state = S0; else state = S2;
+           S2: if (traffic) state = S0; else state = S3;
+           S3: if (traffic) state = S0; else state = S4;
+           S4: if (traffic) state = S0; else state = S5;
+           S5: if (traffic) state = S0; else state = S5;
+         endcase
+         
+     always @ (state)     //Evaluate output
+         case (state)
+           S0: #10 Z=0;
+           S1: #10 Z=0;
+           S2: #10 Z=0;
+           S3: #10 Z=0;
+           S4: #10 Z=0;
+           S5: #10 Z=1;
+        endcase
+ //  assign stateNumber = state;        //Output of flip-flops
+
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+`timescale 1ns/1ns
+module counterBCD (count,load,D,CLK,RST,Q,finished);
+      input CLK,RST,load;
+      input [1:0]count;
+      input [7:0]D;
+      output [7:0]Q;
+      output finished;
+      wire wire1,wire2,En;      
+      
+      
+      or or1(En,count[0],count[1]);
+      nor nor1(wire1,Q[0],Q[1],Q[2],Q[3]);
+      counter c1(En,load,wire1,D[3:0],CLK,RST,0,Q[3:0]);
+      nor nor2(wire2,Q[4],Q[5],Q[6],Q[7]);
+      counter c2(wire1,load,finished,D[7:4],CLK,RST,1,Q[7:4]);
+      and and1(finished,wire1,wire2);
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+`timescale 1ns/1ns
+module counter (En,load,cl,D,CLK,RST,flag,Q);
+      input En,CLK,RST,load,cl,flag;
+      input [3:0]D;
+      output [3:0]Q;
+      reg [3:0]num;
+      reg [3:0]Q;
+      always @ (posedge load)
+            begin
+              num = D;
+              #10 Q = num;
+            end
+            
+      always @ (posedge CLK or negedge RST)
+            if(~RST)
+               if(flag)
+               begin
+                num = 4'b1001; 
+                #10 Q = num;
+                end
+               else
+               begin
+                num = 4'b0000;
+                #10 Q = num;
+                end
+            else if(cl)
+              begin
+                  num = 4'b1001;
+                  #10 Q = num;
+              end
+            else if (En)
+              begin
+                num = num - 1;
+                #10 Q = num;
+              end
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1ns/1ns
+module main (R,A,B,A_traffic,B_traffic,CLK,RST,stNumFMain,A_Time_L,A_Time_H,B_Time_L,B_Time_H,A_Light,B_Light);
+      input A_traffic,B_traffic,CLK,RST,R,A,B;
+      output [3:0]A_Time_L,A_Time_H,B_Time_L,B_Time_H;
+      output A_Light,B_Light;
+      output [4:0] stNumFMain;
+      wire [7:0]Q;
+      wire Z1,Z2,finished;
+      wire[1:0]count;
+      reg [7:0]D;
+      reg load;
+      reg [3:0]A_Time_L,A_Time_H,B_Time_L,B_Time_H;
+      always @ (count)
+        case (count)
+          2'b00:
+            load = 0;
+          2'b11:
+            begin
+              //D = 8'b00000101;
+              D = 8'b00000100;
+              load = 1;
+              #2 load = 0;
+            end
+          2'b01:
+            begin
+              // D = 8'b10010000;
+              D = 8'b10001001;
+              load = 1;
+              #2 load = 0;
+            end
+          2'b10:
+             begin
+              // D = 8'b00110000;
+              D = 8'b00101001;
+              load = 1;
+              #2 load = 0;
+            end
+          
+      endcase
+
+      always @(Q)
+        if (stNumFMain == 5'b01000 || stNumFMain == 5'b01100)
+          begin
+          #10 assign B_Time_H = 4'b1111;
+          #10 assign B_Time_L = 4'b1111;
+          #10 assign A_Time_H = 4'b1111;
+          #10 assign A_Time_L = 4'b1111;
+        end
+        else begin
+          #10 assign B_Time_H = Q[7:4];
+          #10 assign B_Time_L = Q[3:0];
+          #10 assign A_Time_H = Q[7:4];
+          #10 assign A_Time_L = Q[3:0];
+        end
+
+
+      Traffic_Congestion_Detection myTrafficCongestionA(A_traffic,RST,CLK,Z1);
+      Traffic_Congestion_Detection myTrafficCongestionB(B_traffic,RST,CLK,Z2);
+      Moore_mdl myMooreMdl(finished,R,A,B,Z1,Z2,CLK,RST,count,stNumFMain,A_Light,B_Light);
+      counterBCD myCounter(count,load,D,CLK,RST,Q,finished);
+
+endmodule
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+`timescale 1s/1ns
+module TestBenchTest();
+      reg A_traffic,B_traffic,CLK,RST,R,A,B;
+      wire [3:0]A_Time_L,A_Time_H,B_Time_L,B_Time_H;
+      wire A_Light,B_Light;
+      wire [4:0] stNumFMain;
+  main myMain(R,A,B,A_traffic,B_traffic,CLK,RST,stNumFMain,A_Time_L,A_Time_H,B_Time_L,B_Time_H,A_Light,B_Light);
+ 
+  initial begin
+         RST = 0;
+         CLK = 1;
+         R=0;
+         A=0;
+         B=0;
+         A_traffic=1;
+         B_traffic=1;
+        #0.00001 RST = 1; 
+       
+        #140.5 A_traffic = 0;
+        #20 B_traffic = 0;
+        #20 A_traffic = 1;
+
+        #20 A = 1;
+        #50 B = 1; A=0;
+        #10 R=1;
+        #40 R=0; A_traffic=1; B_traffic=0; A=1; B=0;
+        #40 B_traffic=1; 
+        
+   end
+
+   always
+     #0.5 CLK = ~CLK;
+
+endmodule
+
+
